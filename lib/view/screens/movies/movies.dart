@@ -8,11 +8,14 @@ class MoviesScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
         body: SafeArea(
-      child: Column(
-        children: const [
-          SearchInput(),
-          Text("hello"),
-        ],
+      child: Padding(
+        padding: const EdgeInsets.all(16.0),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.center,
+          children: const [
+            SearchInput(),
+          ],
+        ),
       ),
     ));
   }

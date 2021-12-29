@@ -10,6 +10,14 @@ class SearchInput extends StatefulWidget {
 class _SearchInputState extends State<SearchInput> {
   @override
   Widget build(BuildContext context) {
-    return Container();
+    return TextField(
+      decoration: InputDecoration(
+        prefixIcon: Icon(
+          Icons.search,
+          color: Theme.of(context).iconTheme.color,
+        ),
+        hintText: "Поиск по названию фильма",
+      ),
+    );
   }
 }
