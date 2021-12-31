@@ -9,34 +9,42 @@ class MovieTile extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      margin: const EdgeInsets.symmetric(vertical: 5),
-      decoration: const BoxDecoration(
-        borderRadius: BorderRadius.all(Radius.circular(3)),
-        boxShadow: [
-          BoxShadow(blurRadius: 10, color: Colors.black),
-        ],
-        color: Colors.white,
-      ),
-      child: SizedBox(
-        height: 200,
-        child: Row(
-          mainAxisAlignment: MainAxisAlignment.start,
-          children: [
-            _Thumbnail(movie.posterPath),
-            Expanded(
-              child: Padding(
-                padding: const EdgeInsets.all(15.0),
-                child: _MovieInformation(
-                  title: movie.title,
-                  overview: movie.overview,
-                  releaseDate: movie.releaseDate,
-                  isFavorite: false,
-                  isAdult: movie.adult,
+    return GestureDetector(
+      onTap: () {
+        var snackBar = SnackBar(
+          content: Text(movie.title ?? "Название фильма"),
+        );
+        ScaffoldMessenger.of(context).showSnackBar(snackBar);
+      },
+      child: Container(
+        margin: const EdgeInsets.symmetric(vertical: 5),
+        decoration: const BoxDecoration(
+          borderRadius: BorderRadius.all(Radius.circular(3)),
+          boxShadow: [
+            BoxShadow(blurRadius: 10, color: Colors.black),
+          ],
+          color: Colors.white,
+        ),
+        child: SizedBox(
+          height: 200,
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.start,
+            children: [
+              _Thumbnail(movie.posterPath),
+              Expanded(
+                child: Padding(
+                  padding: const EdgeInsets.all(15.0),
+                  child: _MovieInformation(
+                    title: movie.title,
+                    overview: movie.overview,
+                    releaseDate: movie.releaseDate,
+                    isFavorite: false,
+                    isAdult: movie.adult,
+                  ),
                 ),
               ),
-            ),
-          ],
+            ],
+          ),
         ),
       ),
     );

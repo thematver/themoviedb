@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:themoviedb/model/movie.dart';
 import 'package:themoviedb/services/network_client.dart';
 import 'package:themoviedb/view/widgets/move_tile.dart';
-import 'package:themoviedb/view/widgets/stubs/request_error.dart';
+import 'package:themoviedb/view/widgets/search_appbar.dart';
 import 'package:themoviedb/view/widgets/widgets.dart';
 
 class MoviesScreen extends StatefulWidget {
@@ -32,26 +32,18 @@ class _MoviesScreenState extends State<MoviesScreen> {
     );
   }
 
-  void onSearchEntered(String? term) {
-    setState(
-      () {
-        searchTerm = term;
-      },
-    );
-  }
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      appBar: const SearchAppBar(),
       body: SafeArea(
         child: Padding(
-          padding: const EdgeInsets.all(16.0),
+          padding: const EdgeInsets.symmetric(horizontal: 16),
           child: Column(
             mainAxisSize: MainAxisSize.min,
             mainAxisAlignment: MainAxisAlignment.center,
             crossAxisAlignment: CrossAxisAlignment.center,
             children: [
-              SearchInput(onEntered: onSearchEntered),
               Expanded(
                 child: _MoviesList(
                   movies: movies,

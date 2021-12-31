@@ -1,6 +1,5 @@
 import 'dart:convert';
 
-import 'package:flutter/foundation.dart';
 import 'package:themoviedb/model/movie.dart';
 import 'package:http/http.dart' as http;
 import 'package:themoviedb/view/view.dart';

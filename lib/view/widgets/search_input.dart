@@ -34,7 +34,7 @@ class _SearchInputState extends State<SearchInput> {
   Widget build(BuildContext context) {
     return TextField(
       controller: _textEditingController,
-      onSubmitted: widget.onEntered,
+      onChanged: widget.onEntered,
       cursorColor: Theme.of(context).iconTheme.color,
       decoration: InputDecoration(
         isDense: true,
@@ -47,6 +47,7 @@ class _SearchInputState extends State<SearchInput> {
                 highlightColor: Colors.transparent,
                 onPressed: () {
                   _textEditingController.clear();
+                  widget.onEntered("");
                 },
               )
             : null,
