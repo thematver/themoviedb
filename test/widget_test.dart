@@ -9,7 +9,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 
 import 'package:themoviedb/main.dart';
-import 'package:themoviedb/services/network_client.dart';
+import 'package:themoviedb/services/movies_client.dart';
 
 void main() {
   NetworkClient client = NetworkClient();

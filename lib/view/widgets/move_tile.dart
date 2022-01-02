@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:hive_flutter/hive_flutter.dart';
 import 'package:themoviedb/model/movie.dart';
 import 'package:themoviedb/view/common/date_prettifier.dart';
 import 'package:themoviedb/view/widgets/favorite_button.dart';
@@ -35,6 +36,7 @@ class MovieTile extends StatelessWidget {
                 child: Padding(
                   padding: const EdgeInsets.all(15.0),
                   child: _MovieInformation(
+                    id: movie.id,
                     title: movie.title,
                     overview: movie.overview,
                     releaseDate: movie.releaseDate,
@@ -57,13 +59,11 @@ class _Thumbnail extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return SizedBox(
-      child: ClipRRect(
-        borderRadius: const BorderRadius.horizontal(left: Radius.circular(2)),
-        child: Image.network(
-          "https://image.tmdb.org/t/p/w500$posterPath",
-        ),
-      ),
+    return ClipRRect(
+      borderRadius: const BorderRadius.horizontal(left: Radius.circular(2)),
+      child: posterPath != null
+          ? Image.network("https://image.tmdb.org/t/p/w500$posterPath")
+          : Container(height: 200, color: Colors.grey, width: 135),
     );
   }
 }
@@ -74,15 +74,19 @@ class _MovieInformation extends StatelessWidget {
   final DateTime? releaseDate;
   final bool? isFavorite;
   final bool? isAdult;
+  final int id;
 
   const _MovieInformation({
     Key? key,
-    this.title,
-    this.overview,
+    required this.id,
+    String? title,
+    String? overview,
     this.releaseDate,
     this.isAdult = false,
     this.isFavorite = false,
-  }) : super(key: key);
+  })  : title = title ?? "Название фильма",
+        overview = overview ?? "Описание фильма",
+        super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -115,21 +119,34 @@ class _MovieInformation extends StatelessWidget {
         ),
         _Footer(
           releaseDate: releaseDate,
-          isFavorite: isFavorite!,
+          id: id,
         ),
       ],
     );
   }
 }
 
-class _Footer extends StatelessWidget {
-  final bool isFavorite;
+class _Footer extends StatefulWidget {
+  final int id;
   final DateTime? releaseDate;
   const _Footer({
     Key? key,
-    this.isFavorite = false,
+    required this.id,
     this.releaseDate,
   }) : super(key: key);
+
+  @override
+  State<_Footer> createState() => _FooterState();
+}
+
+class _FooterState extends State<_Footer> {
+  late Box<bool> favoritesBox;
+
+  @override
+  void initState() {
+    favoritesBox = Hive.box("favoriteMovies");
+    super.initState();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -145,7 +162,7 @@ class _Footer extends StatelessWidget {
             ),
             const SizedBox(width: 10),
             Text(
-              DateFormat.prettify(releaseDate),
+              DateFormat.prettify(widget.releaseDate),
               style: Theme.of(context)
                   .textTheme
                   .caption!
@@ -153,9 +170,16 @@ class _Footer extends StatelessWidget {
             ),
           ],
         ),
-        FavoriteButton(
-          isFavorite: isFavorite,
-          onFavoriteChanged: (current) {},
+        ValueListenableBuilder(
+          valueListenable: favoritesBox.listenable(),
+          builder: (context, Box<bool> box, _) {
+            return FavoriteButton(
+              isFavorite: box.get(widget.id) ?? false,
+              onFavoriteChanged: (val) {
+                box.put(widget.id, val);
+              },
+            );
+          },
         ),
       ],
     );

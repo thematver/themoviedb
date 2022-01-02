@@ -1,8 +1,10 @@
 import 'dart:convert';
 
-class Movie {
-  Movie({
-    this.id,
+import 'package:equatable/equatable.dart';
+
+class Movie extends Equatable {
+  const Movie({
+    required this.id,
     this.adult,
     this.backdropPath,
     this.genreIds,
@@ -18,7 +20,7 @@ class Movie {
     this.voteCount,
   });
 
-  final int? id;
+  final int id;
   final bool? adult;
   final String? backdropPath;
   final List<int>? genreIds;
@@ -34,10 +36,10 @@ class Movie {
   final int? voteCount;
 
   Movie copyWith({
+    int? id,
     bool? adult,
     String? backdropPath,
     List<int>? genreIds,
-    int? id,
     String? originalLanguage,
     String? originalTitle,
     String? overview,
@@ -86,7 +88,7 @@ class Movie {
         posterPath: json["poster_path"],
         releaseDate: json["release_date"] == null
             ? null
-            : DateTime.parse(json["release_date"]),
+            : DateTime.tryParse(json["release_date"]),
         title: json["title"],
         video: json["video"],
         voteAverage: json["vote_average"] == null
@@ -115,4 +117,7 @@ class Movie {
         "vote_average": voteAverage,
         "vote_count": voteCount,
       };
+
+  @override
+  List<Object?> get props => [id];
 }
