@@ -91,7 +91,7 @@ class _MoviesList extends StatefulWidget {
 
 class __MoviesListState extends State<_MoviesList> {
   final ScrollController _scrollController = ScrollController();
-
+  var percentage = 0.0;
   @override
   void initState() {
     _scrollController.addListener(_onScroll);
@@ -104,7 +104,7 @@ class __MoviesListState extends State<_MoviesList> {
     final maxScroll = _scrollController.position.maxScrollExtent;
     final currentScroll = _scrollController.offset;
 
-    return currentScroll >= (maxScroll * 0.9);
+    return currentScroll >= (maxScroll * 0.99);
   }
 
   @override
@@ -121,19 +121,45 @@ class __MoviesListState extends State<_MoviesList> {
 
   @override
   Widget build(BuildContext context) {
-    return ListView.builder(
-      physics: const AlwaysScrollableScrollPhysics(),
-      controller: _scrollController,
-      shrinkWrap: true,
-      itemCount: widget.hasReachedMax
-          ? widget.movies.length
-          : widget.movies.length + 1,
-      itemBuilder: (context, index) {
-        return index >= widget.movies.length
-            ? const BottomLoader()
-            : MovieTile(
-                movie: widget.movies[index],
-                key: Key(widget.movies[index].id.toString()));
+    return OrientationBuilder(
+      builder: (context, orientation) {
+        if (_scrollController.hasClients) {
+          percentage = _scrollController.position.pixels /
+              _scrollController.position.maxScrollExtent;
+          if (orientation == Orientation.landscape) {
+            percentage /= 2;
+            _scrollController.jumpTo(
+                percentage * _scrollController.position.maxScrollExtent);
+          } else {
+            percentage *= 2;
+            _scrollController.jumpTo(
+                percentage * _scrollController.position.maxScrollExtent);
+          }
+        }
+        return GridView.builder(
+          gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+            crossAxisSpacing: 20,
+            mainAxisSpacing: 10,
+            childAspectRatio: 5 / 3,
+            crossAxisCount: (orientation == Orientation.portrait) ? 1 : 2,
+          ),
+          physics: const AlwaysScrollableScrollPhysics(),
+          controller: _scrollController,
+          shrinkWrap: true,
+          itemCount: widget.hasReachedMax
+              ? widget.movies.length
+              : widget.movies.length + 1,
+          itemBuilder: (context, index) {
+            return index >= widget.movies.length
+                ? const BottomLoader()
+                : MovieTile(
+                    movie: widget.movies[index],
+                    key: Key(
+                      widget.movies[index].id.toString(),
+                    ),
+                  );
+          },
+        );
       },
     );
   }
