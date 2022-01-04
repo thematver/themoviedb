@@ -22,10 +22,31 @@ class MoviesBloc extends Bloc<MoviesEvent, MoviesState> {
       transformer: debounce(throttleDuration),
     );
 
-    on<SearchTermChanged>(
-      _onSearchTermChanged,
+    on<SearchTermChanged>(_onSearchTermChanged);
+
+    on<SearchQuery>(
+      _onSearchQuery,
       transformer: debounce(throttleDuration),
     );
+
+    on<Refresh>(_onRefresh);
+  }
+
+  Future<void> _onRefresh(
+    Refresh event,
+    Emitter<MoviesState> emit,
+  ) async {
+    emit(
+      state.copyWith(
+        status: MoviesStatus.loading,
+        movies: [],
+        searchTerm: state.searchTerm,
+        hasReachedMax: false,
+        page: 1,
+      ),
+    );
+
+    add(MoviesFetched());
   }
 
   Future<void> _onSearchTermChanged(
@@ -47,6 +68,14 @@ class MoviesBloc extends Bloc<MoviesEvent, MoviesState> {
     }
 
     emit(state.copyWith(status: MoviesStatus.loading));
+
+    return add(SearchQuery(searchTerm: event.searchTerm));
+  }
+
+  Future<void> _onSearchQuery(
+    SearchQuery event,
+    Emitter<MoviesState> emit,
+  ) async {
     final _movies =
         await moviesRepository.search(page: 1, query: event.searchTerm);
 
@@ -76,7 +105,7 @@ class MoviesBloc extends Bloc<MoviesEvent, MoviesState> {
             status: MoviesStatus.success,
             movies: _movies,
             hasReachedMax: false,
-            page: 2,
+            page: state.page + 1,
           ),
         );
       }
@@ -86,7 +115,7 @@ class MoviesBloc extends Bloc<MoviesEvent, MoviesState> {
               query: state.searchTerm,
             )
           : await moviesRepository.fetchDiscovery(page: state.page);
-      _movies.isEmpty
+      _movies.isEmpty || _movies.length < 20
           ? emit(state.copyWith(hasReachedMax: true))
           : emit(
               state.copyWith(
@@ -94,6 +123,7 @@ class MoviesBloc extends Bloc<MoviesEvent, MoviesState> {
                 movies: List.of(state.movies)..addAll(_movies),
                 hasReachedMax: false,
                 page: state.page + 1,
+                searchTerm: state.searchTerm,
               ),
             );
     } catch (_) {

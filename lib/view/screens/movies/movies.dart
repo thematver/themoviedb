@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:provider/provider.dart';
 import 'package:themoviedb/bloc/movies_bloc.dart';
-import 'package:themoviedb/model/movie.dart';
 import 'package:themoviedb/view/widgets/bottom_loader.dart';
 import 'package:themoviedb/view/widgets/move_tile.dart';
 import 'package:themoviedb/view/widgets/search_appbar.dart';
@@ -108,6 +107,15 @@ class __MoviesListState extends State<_MoviesList> {
     super.dispose();
   }
 
+  Future<void> _update() async {
+    bloc.add(
+      Refresh(),
+    );
+    do {
+      await Future.delayed(const Duration(milliseconds: 100));
+    } while (bloc.state.status == MoviesStatus.loading);
+  }
+
   void _onScroll() {
     if (_isBottom) bloc.add(MoviesFetched());
   }
@@ -134,29 +142,32 @@ class __MoviesListState extends State<_MoviesList> {
 
         return BlocBuilder<MoviesBloc, MoviesState>(
           builder: (context, state) {
-            return GridView.builder(
-              gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-                crossAxisSpacing: 20,
-                mainAxisSpacing: 10,
-                childAspectRatio: 5 / 3,
-                crossAxisCount: (orientation == Orientation.portrait) ? 1 : 2,
+            return RefreshIndicator(
+              onRefresh: _update,
+              child: GridView.builder(
+                gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                  crossAxisSpacing: 20,
+                  mainAxisSpacing: 10,
+                  childAspectRatio: 5 / 3,
+                  crossAxisCount: (orientation == Orientation.portrait) ? 1 : 2,
+                ),
+                physics: const AlwaysScrollableScrollPhysics(),
+                controller: _scrollController,
+                shrinkWrap: true,
+                itemCount: state.hasReachedMax || state.movies.length < 20
+                    ? state.movies.length
+                    : state.movies.length + 1,
+                itemBuilder: (context, index) {
+                  return index >= state.movies.length
+                      ? const BottomLoader()
+                      : MovieTile(
+                          movie: state.movies[index],
+                          key: Key(
+                            state.movies[index].id.toString(),
+                          ),
+                        );
+                },
               ),
-              physics: const AlwaysScrollableScrollPhysics(),
-              controller: _scrollController,
-              shrinkWrap: true,
-              itemCount: state.hasReachedMax || state.movies.length < 20
-                  ? state.movies.length
-                  : state.movies.length + 1,
-              itemBuilder: (context, index) {
-                return index >= state.movies.length
-                    ? const BottomLoader()
-                    : MovieTile(
-                        movie: state.movies[index],
-                        key: Key(
-                          state.movies[index].id.toString(),
-                        ),
-                      );
-              },
             );
           },
         );

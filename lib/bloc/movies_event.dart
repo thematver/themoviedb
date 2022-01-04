@@ -7,10 +7,21 @@ abstract class MoviesEvent extends Equatable {
 
 class MoviesFetched extends MoviesEvent {}
 
+class Refresh extends MoviesEvent {}
+
 class SearchTermChanged extends MoviesEvent {
   final String? searchTerm;
 
   SearchTermChanged({required this.searchTerm});
+  @override
+  List<Object> get props => [searchTerm ?? ""];
+}
+
+class SearchQuery extends MoviesEvent {
+  final String? searchTerm;
+
+  SearchQuery({required this.searchTerm});
+
   @override
   List<Object> get props => [searchTerm ?? ""];
 }

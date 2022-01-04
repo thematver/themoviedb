@@ -37,7 +37,10 @@ class _SearchAppBarState extends State<SearchAppBar> {
               children: [
                 SearchInput(onEntered: onSearch),
                 state.status == MoviesStatus.loading && state.movies.isNotEmpty
-                    ? const LinearProgressIndicator()
+                    ? const Padding(
+                        padding: EdgeInsets.only(top: 5),
+                        child: LinearProgressIndicator(),
+                      )
                     : Container(),
               ],
             ),

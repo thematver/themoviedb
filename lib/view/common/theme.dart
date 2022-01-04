@@ -22,5 +22,9 @@ class TheMovieTheme {
           ),
         ),
         colorScheme: const ColorScheme.dark(),
+        primaryColor: Colors.blue,
+        indicatorColor: Colors.blue,
+        progressIndicatorTheme:
+            const ProgressIndicatorThemeData(color: Colors.blue),
       );
 }
