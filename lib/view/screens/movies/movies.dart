@@ -5,9 +5,7 @@ import 'package:themoviedb/bloc/movies_bloc.dart';
 import 'package:themoviedb/model/movie.dart';
 import 'package:themoviedb/view/widgets/bottom_loader.dart';
 import 'package:themoviedb/view/widgets/move_tile.dart';
-import 'package:themoviedb/view/widgets/retry_button.dart';
 import 'package:themoviedb/view/widgets/search_appbar.dart';
-import 'package:themoviedb/view/widgets/stubs/request_error.dart';
 import 'package:themoviedb/view/widgets/widgets.dart';
 
 class MoviesScreen extends StatefulWidget {
@@ -92,10 +90,12 @@ class _MoviesList extends StatefulWidget {
 class __MoviesListState extends State<_MoviesList> {
   final ScrollController _scrollController = ScrollController();
   var percentage = 0.0;
+  late MoviesBloc bloc;
+
   @override
   void initState() {
     _scrollController.addListener(_onScroll);
-
+    bloc = context.read<MoviesBloc>();
     super.initState();
   }
 
@@ -116,7 +116,7 @@ class __MoviesListState extends State<_MoviesList> {
   }
 
   void _onScroll() {
-    if (_isBottom) context.read<MoviesBloc>().add(MoviesFetched());
+    if (_isBottom && !bloc.state.hasReachedMax) bloc.add(MoviesFetched());
   }
 
   @override
@@ -129,13 +129,16 @@ class __MoviesListState extends State<_MoviesList> {
           if (orientation == Orientation.landscape) {
             percentage /= 2;
             _scrollController.jumpTo(
-                percentage * _scrollController.position.maxScrollExtent);
+              percentage * _scrollController.position.maxScrollExtent,
+            );
           } else {
             percentage *= 2;
             _scrollController.jumpTo(
-                percentage * _scrollController.position.maxScrollExtent);
+              percentage * _scrollController.position.maxScrollExtent,
+            );
           }
         }
+
         return GridView.builder(
           gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
             crossAxisSpacing: 20,

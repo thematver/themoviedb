@@ -1,4 +1,3 @@
-import 'package:flutter/material.dart';
 import 'package:themoviedb/model/movie.dart';
 import 'package:themoviedb/services/movies_client.dart';
 
