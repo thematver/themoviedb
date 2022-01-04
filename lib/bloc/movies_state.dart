@@ -29,7 +29,7 @@ class MoviesState extends Equatable {
       movies: movies ?? this.movies,
       hasReachedMax: hasReachedMax ?? this.hasReachedMax,
       page: page ?? this.page,
-      searchTerm: searchTerm ?? this.searchTerm,
+      searchTerm: searchTerm,
     );
   }
 

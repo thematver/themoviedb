@@ -36,7 +36,10 @@ class MoviesBloc extends Bloc<MoviesEvent, MoviesState> {
       emit(
         state.copyWith(
           status: MoviesStatus.initial,
+          movies: null,
           searchTerm: null,
+          hasReachedMax: false,
+          page: 1,
         ),
       );
 
@@ -73,7 +76,7 @@ class MoviesBloc extends Bloc<MoviesEvent, MoviesState> {
             status: MoviesStatus.success,
             movies: _movies,
             hasReachedMax: false,
-            page: 1,
+            page: 2,
           ),
         );
       }

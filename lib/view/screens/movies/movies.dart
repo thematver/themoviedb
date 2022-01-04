@@ -59,10 +59,7 @@ class _MoviesScreenState extends State<MoviesScreen> {
                       );
                     }
 
-                    return _MoviesList(
-                      movies: state.movies,
-                      hasReachedMax: state.hasReachedMax,
-                    );
+                    return const _MoviesList();
                   },
                 ),
               ),
@@ -75,12 +72,8 @@ class _MoviesScreenState extends State<MoviesScreen> {
 }
 
 class _MoviesList extends StatefulWidget {
-  final List<Movie> movies;
-  final bool hasReachedMax;
   const _MoviesList({
     Key? key,
-    required this.movies,
-    required this.hasReachedMax,
   }) : super(key: key);
 
   @override
@@ -116,7 +109,7 @@ class __MoviesListState extends State<_MoviesList> {
   }
 
   void _onScroll() {
-    if (_isBottom && !bloc.state.hasReachedMax) bloc.add(MoviesFetched());
+    if (_isBottom) bloc.add(MoviesFetched());
   }
 
   @override
@@ -139,28 +132,32 @@ class __MoviesListState extends State<_MoviesList> {
           }
         }
 
-        return GridView.builder(
-          gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-            crossAxisSpacing: 20,
-            mainAxisSpacing: 10,
-            childAspectRatio: 5 / 3,
-            crossAxisCount: (orientation == Orientation.portrait) ? 1 : 2,
-          ),
-          physics: const AlwaysScrollableScrollPhysics(),
-          controller: _scrollController,
-          shrinkWrap: true,
-          itemCount: widget.hasReachedMax
-              ? widget.movies.length
-              : widget.movies.length + 1,
-          itemBuilder: (context, index) {
-            return index >= widget.movies.length
-                ? const BottomLoader()
-                : MovieTile(
-                    movie: widget.movies[index],
-                    key: Key(
-                      widget.movies[index].id.toString(),
-                    ),
-                  );
+        return BlocBuilder<MoviesBloc, MoviesState>(
+          builder: (context, state) {
+            return GridView.builder(
+              gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                crossAxisSpacing: 20,
+                mainAxisSpacing: 10,
+                childAspectRatio: 5 / 3,
+                crossAxisCount: (orientation == Orientation.portrait) ? 1 : 2,
+              ),
+              physics: const AlwaysScrollableScrollPhysics(),
+              controller: _scrollController,
+              shrinkWrap: true,
+              itemCount: state.hasReachedMax || state.movies.length < 20
+                  ? state.movies.length
+                  : state.movies.length + 1,
+              itemBuilder: (context, index) {
+                return index >= state.movies.length
+                    ? const BottomLoader()
+                    : MovieTile(
+                        movie: state.movies[index],
+                        key: Key(
+                          state.movies[index].id.toString(),
+                        ),
+                      );
+              },
+            );
           },
         );
       },
