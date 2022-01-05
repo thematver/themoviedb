@@ -7,7 +7,7 @@ import 'package:rxdart/rxdart.dart';
 part 'movies_event.dart';
 part 'movies_state.dart';
 
-const throttleDuration = Duration(seconds: 1);
+const debounceDuration = Duration(seconds: 1);
 
 EventTransformer<Event> debounce<Event>(Duration duration) {
   return (events, mapper) => events.debounceTime(duration).switchMap(mapper);
@@ -19,14 +19,14 @@ class MoviesBloc extends Bloc<MoviesEvent, MoviesState> {
   MoviesBloc({required this.moviesRepository}) : super(const MoviesState()) {
     on<MoviesFetched>(
       _onMoviesFetched,
-      transformer: debounce(throttleDuration),
+      transformer: debounce(debounceDuration),
     );
 
     on<SearchTermChanged>(_onSearchTermChanged);
 
     on<SearchQuery>(
       _onSearchQuery,
-      transformer: debounce(throttleDuration),
+      transformer: debounce(debounceDuration),
     );
 
     on<Refresh>(_onRefresh);

@@ -35,14 +35,11 @@ class _SearchInputState extends State<SearchInput> {
     return TextField(
       controller: _textEditingController,
       onChanged: widget.onEntered,
-      cursorColor: Theme.of(context).iconTheme.color,
       decoration: InputDecoration(
-        isDense: true,
         suffixIcon: shouldShowClearButton
             ? IconButton(
-                icon: Icon(
+                icon: const Icon(
                   Icons.clear,
-                  color: Theme.of(context).iconTheme.color,
                 ),
                 highlightColor: Colors.transparent,
                 onPressed: () {

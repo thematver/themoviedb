@@ -2,10 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:provider/provider.dart';
 import 'package:themoviedb/bloc/movies_bloc.dart';
-import 'package:themoviedb/view/widgets/bottom_loader.dart';
-import 'package:themoviedb/view/widgets/move_tile.dart';
-import 'package:themoviedb/view/widgets/search_appbar.dart';
-import 'package:themoviedb/view/widgets/widgets.dart';
+import 'package:themoviedb/view/view.dart';
 
 class MoviesScreen extends StatefulWidget {
   const MoviesScreen({Key? key}) : super(key: key);
@@ -154,7 +151,9 @@ class __MoviesListState extends State<_MoviesList> {
                 physics: const AlwaysScrollableScrollPhysics(),
                 controller: _scrollController,
                 shrinkWrap: true,
-                itemCount: state.hasReachedMax || state.movies.length < 20
+                itemCount: state.hasReachedMax ||
+                        state.movies.length <
+                            20 //this means movies are not completely loaded
                     ? state.movies.length
                     : state.movies.length + 1,
                 itemBuilder: (context, index) {

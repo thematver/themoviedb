@@ -44,7 +44,7 @@ class _SearchAppBarState extends State<SearchAppBar> {
                     : Container(),
               ],
             ),
-            elevation: searchTerm != null && searchTerm!.isNotEmpty ? 4 : 0,
+            elevation: searchTerm != null ? 4 : 0,
           ),
         );
       },

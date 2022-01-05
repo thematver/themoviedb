@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 
+import '../view.dart';
+
 class RetryButton extends StatelessWidget {
   final VoidCallback onPressed;
   const RetryButton({Key? key, required this.onPressed}) : super(key: key);
@@ -10,7 +12,7 @@ class RetryButton extends StatelessWidget {
       onPressed: onPressed,
       shape: const CircleBorder(),
       padding: const EdgeInsets.all(24),
-      color: Colors.blue,
+      color: CustomColors.blue,
       child: const Icon(
         Icons.update,
         color: Colors.white,

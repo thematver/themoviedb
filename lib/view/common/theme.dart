@@ -1,11 +1,16 @@
 import 'package:flutter/material.dart';
 
+import 'colors.dart';
+
 class TheMovieTheme {
   static ThemeData get darkTheme => ThemeData(
         textTheme: const TextTheme(
           subtitle1: TextStyle(color: Colors.black),
+          caption: TextStyle(
+            color: Colors.grey,
+          ),
         ),
-        iconTheme: const IconThemeData(color: Colors.blueAccent),
+        iconTheme: IconThemeData(color: CustomColors.blue),
         inputDecorationTheme: InputDecorationTheme(
           floatingLabelStyle: const TextStyle(color: Colors.black),
           labelStyle: const TextStyle(color: Colors.black),
@@ -21,10 +26,7 @@ class TheMovieTheme {
             color: Colors.grey,
           ),
         ),
-        colorScheme: const ColorScheme.dark(),
-        primaryColor: Colors.blue,
-        indicatorColor: Colors.blue,
-        progressIndicatorTheme:
-            const ProgressIndicatorThemeData(color: Colors.blue),
+        colorScheme:
+            const ColorScheme.dark().copyWith(primary: CustomColors.blue),
       );
 }

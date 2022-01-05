@@ -1,8 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:hive_flutter/hive_flutter.dart';
 import 'package:themoviedb/model/movie.dart';
-import 'package:themoviedb/view/common/date_prettifier.dart';
-import 'package:themoviedb/view/widgets/favorite_button.dart';
+import 'package:themoviedb/view/view.dart';
 
 class MovieTile extends StatelessWidget {
   final Movie movie;
@@ -111,10 +110,7 @@ class _MovieInformation extends StatelessWidget {
             overflow: TextOverflow.ellipsis,
             softWrap: true,
             maxLines: 4,
-            style: Theme.of(context)
-                .textTheme
-                .caption!
-                .copyWith(color: Colors.grey),
+            style: Theme.of(context).textTheme.caption,
           ),
         ),
         _Footer(
